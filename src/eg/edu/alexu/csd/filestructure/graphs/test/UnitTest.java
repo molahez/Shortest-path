@@ -8,22 +8,20 @@ import java.io.File;
 
 import eg.edu.alexu.csd.filestructure.graphs.IGraph;
 
-
 public class UnitTest {
 
-	private String[] testGraphs = {"graph_5_5.txt", "graph_50_25.txt", "graph_500_250.txt", "graph_1250_625.txt"};
-	private int[] testGraphsSizes = new int[] { 11, 1045, 26217, 144583};
-	private int[] testGraphsVertices = new int[] { 5, 50, 500, 1250};
-	private int[] testGraphsNeighbors = new int[] { 3, 24, 76, 125};
-	private final String testDir = "res\\";	
+	private String[] testGraphs = { "graph_5_5.txt", "graph_50_25.txt", "graph_500_250.txt", "graph_1250_625.txt" };
+	private int[] testGraphsSizes = new int[] { 11, 1045, 26217, 144583 };
+	private int[] testGraphsVertices = new int[] { 5, 50, 500, 1250 };
+	private int[] testGraphsNeighbors = new int[] { 3, 24, 76, 125 };
+	private final String testDir = "res\\";
 	private String solutionDir = testDir + "solution\\";
 	private String dijkstraOrderDir = solutionDir + "dijkstra_order\\";
-	
-	
-	public static Class<?> getSpecifications(){
+
+	public static Class<?> getSpecifications() {
 		return IGraph.class;
 	}
-	
+
 	@org.junit.Test(timeout = 2000)
 	public void testInvalidGraph() {
 		IGraph graph = (IGraph) TestRunner.getImplementationInstanceForInterface(IGraph.class);
@@ -43,34 +41,34 @@ public class UnitTest {
 		} catch (Exception e) {
 		}
 	}
-	
+
 	@org.junit.Test(timeout = 2000)
 	public void testGraphSize() {
-		for(int i=0; i<testGraphs.length; i++){
+		for (int i = 0; i < testGraphs.length; i++) {
 			IGraph graph = (IGraph) TestRunner.getImplementationInstanceForInterface(IGraph.class);
 			graph.readGraph(new File(testDir + testGraphs[i]));
 			assertEquals("Wrong graph size", testGraphsSizes[i], graph.size());
 		}
 	}
-	
+
 	@org.junit.Test(timeout = 2000)
 	public void testGraphVertices() {
-		for(int i=0; i<testGraphs.length; i++){
+		for (int i = 0; i < testGraphs.length; i++) {
 			IGraph graph = (IGraph) TestRunner.getImplementationInstanceForInterface(IGraph.class);
 			graph.readGraph(new File(testDir + testGraphs[i]));
 			assertEquals("Wrong vertices count", testGraphsVertices[i], graph.getVertices().size());
 		}
 	}
-	
+
 	@org.junit.Test(timeout = 2000)
 	public void testGraphNeighbors() {
-		for(int i=0; i<testGraphs.length; i++){
+		for (int i = 0; i < testGraphs.length; i++) {
 			IGraph graph = (IGraph) TestRunner.getImplementationInstanceForInterface(IGraph.class);
 			graph.readGraph(new File(testDir + testGraphs[i]));
 			assertEquals("Wrong vertices count", testGraphsNeighbors[i], graph.getNeighbors(0).size());
 		}
 	}
-	
+
 	@org.junit.Test(timeout = 2000)
 	public void testNegativeEdges() {
 		String testCaseFileName = "graph_negative_edges.txt";
@@ -129,7 +127,7 @@ public class UnitTest {
 	public void testBellmanFord4() {
 		assertTrue(testGraphBellmanFordRunner(testGraphs[3], 0));
 	}
-	
+
 	private boolean testGraphBellmanFordRunner(String testCaseFileName, int src) {
 		IGraph solver = (IGraph) TestRunner.getImplementationInstanceForInterface(IGraph.class);
 		File inputFile = new File(testDir + testCaseFileName);

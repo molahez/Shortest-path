@@ -17,48 +17,31 @@ public class Graph implements IGraph {
 	String[] l1;
 	ArrayList<Integer> vertices = new ArrayList<Integer>();
 	ArrayList<Integer> neighbours = new ArrayList<Integer>();
-
+	double infinity = Double.POSITIVE_INFINITY;
 	Graphe graphe = null;
 
-	static class Edge {
-		int source;
-		int destination;
-		int weight;
+	class Graphe {
+		// A class to represent a weighted edge in graph
+		class Edge {
+			int src, dest, weight;
 
-		public Edge(int source, int destination, int weight) {
-			this.source = source;
-			this.destination = destination;
-			this.weight = weight;
-		}
-	}
-
-	static class Graphe {
-		int vertices;
-		LinkedList<Edge>[] adjacencylist;
-
-		Graphe(int vertices) {
-			this.vertices = vertices;
-			adjacencylist = new LinkedList[vertices];
-			// initialize adjacency lists for all the vertices
-			for (int i = 0; i < vertices; i++) {
-				adjacencylist[i] = new LinkedList<>();
+			Edge() {
+				src = dest = weight = 0;
 			}
+		};
+
+		int V, E;
+		Edge edge[];
+
+		// Creates a graph with V vertices and E edges
+		Graphe(int v, int e) {
+			V = v;
+			E = e;
+			edge = new Edge[e];
+			for (int i = 0; i < e; ++i)
+				edge[i] = new Edge();
 		}
 
-		public void addEgde(int source, int destination, int weight) {
-			Edge edge = new Edge(source, destination, weight);
-			adjacencylist[source].addFirst(edge); // for directed graph
-		}
-
-		/*public void printGraph() {
-			for (int i = 0; i < vertices; i++) {
-				LinkedList<Edge> list = adjacencylist[i];
-				for (int j = 0; j < list.size(); j++) {
-					System.out.println("vertex-" + i + " is connected to " + list.get(j).destination + " with weight "
-							+ list.get(j).weight);
-				}
-			}
-		}*/
 	}
 
 	@Override
@@ -75,16 +58,18 @@ public class Graph implements IGraph {
 			while ((line = br.readLine()) != null) {
 				if (linecounter == 0) {
 					l1 = line.split(" ");
-					graphe = new Graphe(Integer.parseInt(l1[0]));
+					graphe = new Graphe(Integer.parseInt(l1[0]), Integer.parseInt(l1[1]));
 					linecounter++;
 				} else {
 					String[] l2 = line.split(" ");
-					graphe.addEgde(Integer.parseInt(l2[0]), Integer.parseInt(l2[1]), Integer.parseInt(l2[2]));
+					graphe.edge[linecounter - 1].src = Integer.parseInt(l2[0]);
+					graphe.edge[linecounter - 1].dest = Integer.parseInt(l2[1]);
+					graphe.edge[linecounter - 1].weight = Integer.parseInt(l2[2]);
 					linecounter++;
 
 				}
 			}
-			if((linecounter-1)< size()) {
+			if ((linecounter - 1) < size()) {
 				throw new RuntimeErrorException(null);
 
 			}
@@ -108,7 +93,7 @@ public class Graph implements IGraph {
 
 	@Override
 	public ArrayList<Integer> getVertices() {
-		for(int i = 0;i<Integer.parseInt(l1[0]);i++) {
+		for (int i = 0; i < Integer.parseInt(l1[0]); i++) {
 			vertices.add(i);
 		}
 		return vertices;
@@ -116,12 +101,12 @@ public class Graph implements IGraph {
 
 	@Override
 	public ArrayList<Integer> getNeighbors(int v) {
-		LinkedList<Edge> required = graphe.adjacencylist[v];
 		ArrayList<Integer> req = new ArrayList<Integer>();
-		for(int i =0;i < required.size();i++) {
-			req.add(required.get(i).destination);
+		for (int i = 0; i < graphe.E; i++) {
+			if (v == graphe.edge[i].src) {
+				req.add(graphe.edge[i].dest);
+			}
 		}
-		
 		return req;
 	}
 
@@ -139,8 +124,39 @@ public class Graph implements IGraph {
 
 	@Override
 	public boolean runBellmanFord(int src, int[] distances) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean flag = true;
+		for (int node = 0; node < Integer.parseInt(l1[0]); node++) {
+			distances[node] = (Integer.MAX_VALUE)/2;
+		}
+
+		distances[src] = 0;
+
+		for (int node = 0; node < (Integer.parseInt(l1[0])); node++) {
+			for (int j = 0; j < (Integer.parseInt(l1[1])); j++) {
+				int u = graphe.edge[j].src;
+				int v = graphe.edge[j].dest;
+				int weight = graphe.edge[j].weight;
+				if (distances[u] != (Integer.MAX_VALUE)/2 && distances[u] + weight < distances[v])
+					distances[v] = distances[u] + weight;
+
+			}
+		}
+
+		for (int j = 0; j < (Integer.parseInt(l1[1])); ++j) {
+			int u = graphe.edge[j].src;
+			int v = graphe.edge[j].dest;
+			int weight = graphe.edge[j].weight;
+			if (distances[u] != (Integer.MAX_VALUE)/2 && distances[u] + weight < distances[v]) {
+				flag = false;
+				break;
+			}
+		}
+		if (!flag) {
+			return false;
+		} else {
+			return true;
+
+		}
 	}
 
 }
